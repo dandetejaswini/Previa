@@ -20,7 +20,7 @@
  * =========================================================================
  */
 
-const TARGET_SPREADSHEET_ID = "1iFR2xisU2ZivsaftN5oBHs265kipcHgmAIChusOK6gM";
+const TARGET_SPREADSHEET_ID = "YOUR_TARGET_SPREADSHEET_ID";
 const TARGET_SHEET_NAME = "contact_data";
 
 // Shared secret token configured between Previa server and Apps Script (optional extra security)
