@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        request.auth.token.email != null &&
+        request.auth.token.email.lower() == 'tejaswinidande2913@gmail.com';
+    }
+
+    // Users Collection: users/{uid}
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.email is string
+        && (request.resource.data.provider == 'google' || request.resource.data.provider == 'password');
+      allow delete: if false;
+
+      // User Private Chat History subcollection
+      match /chat_history/{messageId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Contact Submissions: contact_submissions/{submissionId}
+    match /contact_submissions/{submissionId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.submissionId == submissionId
+        && request.resource.data.fullName is string
+        && request.resource.data.fullName.size() > 0
+        && request.resource.data.fullName.size() <= 120
+        && request.resource.data.businessEmail is string
+        && request.resource.data.businessEmail.size() > 0
+        && request.resource.data.businessEmail.size() <= 120
+        && request.resource.data.organizationName is string
+        && request.resource.data.organizationName.size() > 0
+        && request.resource.data.organizationName.size() <= 150
+        && request.resource.data.operationalScenario is string
+        && request.resource.data.operationalScenario.size() >= 10
+        && request.resource.data.operationalScenario.size() <= 2500
+        && request.resource.data.source == 'contact_form';
+      allow update, delete: if false;
+    }
+
+    // Knowledge Base Document Metadata: knowledge_base/{documentId}
+    match /knowledge_base/{documentId} {
+      // Authenticated users can read document metadata for the RAG corpus
+      allow read: if isAuthenticated();
+      // Only the designated Admin can create, update, or delete knowledge base documents
+      allow create, update, delete: if isAdmin();
+
+      // Chunks subcollection: knowledge_base/{documentId}/chunks/{chunkId}
+      match /chunks/{chunkId} {
+        allow read: if isAuthenticated();
+        allow create, update, delete: if isAdmin();
+      }
+    }
+
+    // Collection Group query for chunks across knowledge base documents
+    match /{path=**}/chunks/{chunkId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Operational Events ingested from AI agents (Shipment Tracker, Disruption Intelligence, Risk Sentinel, Impact Analyzer)
+    match /operational_events/{eventId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() || isAdmin();
+    }
+
+    // Control Tower Aggregated State & Metrics
+    match /control_tower_state/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() || isAdmin();
+    }
+  }
+}
+

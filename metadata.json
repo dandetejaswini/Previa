@@ -1,0 +1,8 @@
+{
+  "name": "Previa",
+  "description": "AI-powered supply-chain intelligence platform that predicts disruptions early, calculates impact, and recommends mitigating actions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

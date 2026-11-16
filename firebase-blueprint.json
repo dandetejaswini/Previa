@@ -1,0 +1,146 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile authenticated with Google Firebase Auth or Email/Password",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "company": { "type": "string" },
+        "provider": { "type": "string", "enum": ["google", "password"] },
+        "createdAt": { "type": "string" },
+        "lastLoginAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "provider", "createdAt", "lastLoginAt"]
+    },
+    "ContactSubmission": {
+      "title": "ContactSubmission",
+      "description": "Enterprise advisory and contact form inquiry submitted by an authenticated Previa user",
+      "type": "object",
+      "properties": {
+        "submissionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "businessEmail": { "type": "string" },
+        "organizationName": { "type": "string" },
+        "operationalScenario": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "source": { "type": "string" }
+      },
+      "required": [
+        "submissionId",
+        "userId",
+        "fullName",
+        "businessEmail",
+        "organizationName",
+        "operationalScenario",
+        "createdAt",
+        "source"
+      ]
+    },
+    "KnowledgeBaseDocument": {
+      "title": "KnowledgeBaseDocument",
+      "description": "Document metadata stored in the Previa enterprise knowledge base",
+      "type": "object",
+      "properties": {
+        "documentId": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileType": { "type": "string" },
+        "fileSize": { "type": "number" },
+        "uploadedBy": { "type": "string" },
+        "uploadedAt": { "type": "string" },
+        "processingStatus": { "type": "string", "enum": ["UPLOADING", "PROCESSING", "COMPLETED", "FAILED"] },
+        "processingStartedAt": { "type": "string" },
+        "processingCompletedAt": { "type": "string" },
+        "totalCharacters": { "type": "number" },
+        "totalTokens": { "type": "number" },
+        "totalChunks": { "type": "number" },
+        "averageChunkSize": { "type": "number" },
+        "source": { "type": "string" },
+        "processingError": { "type": "string" },
+        "version": { "type": "number" }
+      },
+      "required": ["documentId", "fileName", "fileType", "uploadedBy", "uploadedAt", "processingStatus"]
+    },
+    "KnowledgeBaseChunk": {
+      "title": "KnowledgeBaseChunk",
+      "description": "Text chunk extracted and indexed from an enterprise knowledge base document",
+      "type": "object",
+      "properties": {
+        "chunkId": { "type": "string" },
+        "documentId": { "type": "string" },
+        "chunkIndex": { "type": "number" },
+        "text": { "type": "string" },
+        "tokenCount": { "type": "number" },
+        "sourceFileName": { "type": "string" },
+        "pageNumber": { "type": "number" },
+        "section": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["chunkId", "documentId", "chunkIndex", "text", "sourceFileName"]
+    },
+    "OperationalEvent": {
+      "title": "OperationalEvent",
+      "description": "Normalized supply-chain operational event ingested from AI agents (Shipment Tracker, Disruption Intelligence, Risk Sentinel, Impact Analyzer)",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "eventType": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "source": { "type": "string" },
+        "agent": { "type": "string" },
+        "severity": { "type": "string" },
+        "shipmentId": { "type": "string" },
+        "supplierId": { "type": "string" },
+        "status": { "type": "string" },
+        "confidence": { "type": "number" },
+        "requiresHumanReview": { "type": "boolean" },
+        "ingestedAt": { "type": "string" }
+      },
+      "required": ["eventId", "eventType", "timestamp", "source", "agent", "status"]
+    },
+    "ControlTowerState": {
+      "title": "ControlTowerState",
+      "description": "Aggregated operational state and KPIs for the Previa Control Tower",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "lastUpdated": { "type": "string" },
+        "totalEventsIngested": { "type": "number" },
+        "activeShipmentsCount": { "type": "number" },
+        "activeDisruptionsCount": { "type": "number" },
+        "criticalRisksCount": { "type": "number" }
+      },
+      "required": ["id", "lastUpdated", "totalEventsIngested"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Individual user profiles accessible only by the authenticated owner"
+    },
+    "/contact_submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/ContactSubmission" },
+      "description": "User contact inquiries accessible only by the authenticated creator"
+    },
+    "/knowledge_base/{documentId}": {
+      "schema": { "$ref": "#/entities/KnowledgeBaseDocument" },
+      "description": "Enterprise Knowledge Base document metadata managed exclusively by the designated admin"
+    },
+    "/knowledge_base/{documentId}/chunks/{chunkId}": {
+      "schema": { "$ref": "#/entities/KnowledgeBaseChunk" },
+      "description": "Indexed knowledge chunks accessible to authenticated users for grounded RAG query retrieval"
+    },
+    "/operational_events/{eventId}": {
+      "schema": { "$ref": "#/entities/OperationalEvent" },
+      "description": "Real operational events received from Previa intelligence agents"
+    },
+    "/control_tower_state/{docId}": {
+      "schema": { "$ref": "#/entities/ControlTowerState" },
+      "description": "Aggregated Control Tower state and metrics"
+    }
+  }
+}
