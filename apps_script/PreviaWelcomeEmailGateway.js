@@ -2,32 +2,10 @@
  * =========================================================================
  * PREVIA OWNER-CONTROLLED WELCOME EMAIL GATEWAY (GOOGLE APPS SCRIPT)
  * =========================================================================
- * 
- * Purpose:
- * Sends an idempotent welcome email to newly created Previa user accounts.
- * Executes strictly under the owner account (tejaswinidande2913@gmail.com)
- * with fixed display name "Previa AI".
- * 
- * Deployment Instructions:
- * 1. Log in to Google with the owner account: tejaswinidande2913@gmail.com
- * 2. Visit https://script.google.com and click "New project".
- * 3. Name the project: "PreviaWelcomeEmailGateway".
- * 4. Paste this code into Code.gs (replacing any boilerplate code).
- * 5. Click "Deploy" > "New deployment".
- * 6. Select type: "Web app" (click the gear icon > Web app).
- * 7. Configuration:
- *    - Description: "Previa Welcome Email Dispatch Gateway"
- *    - Execute as: "Me (tejaswinidande2913@gmail.com)"  <-- MANDATORY!
- *    - Who has access: "Anyone" (allows Previa backend / app to trigger welcome dispatch)
- * 8. Click "Deploy" and complete the one-time authorization using tejaswinidande2913@gmail.com.
- * 9. Copy the generated Web App URL (ending in /exec).
- * 10. Set the environment variable in Previa:
- *     PREVIA_WELCOME_EMAIL_APPS_SCRIPT_URL="https://script.google.com/macros/s/.../exec"
- * =========================================================================
  */
 
 // Owner Sender Identity Configuration
-const FIXED_SENDER_EMAIL = "tejaswinidande2913@gmail.com";
+const FIXED_SENDER_EMAIL = "YOUR_EMAIL";
 const FIXED_SENDER_DISPLAY_NAME = "Previa AI";
 const EXPECTED_API_TOKEN = "PREVIA_WELCOME_GATEWAY_SEC_2026";
 
