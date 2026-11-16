@@ -6,7 +6,6 @@
  * Deployment Instructions:
  * 1. Open Google Sheets (or script.google.com):
  *    Spreadsheet: "Previa_AI_Contact_Details"
- *    ID: 1iFR2xisU2ZivsaftN5oBHs265kipcHgmAIChusOK6gM
  * 2. Go to Extensions > Apps Script.
  * 3. Paste this code into Code.gs.
  * 4. Click "Deploy" > "New deployment".
